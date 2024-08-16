@@ -1,12 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aula</title>
-    <link rel="stylesheet" href="{{url_for('static', filename='css/estilo.css')}}">
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block conteudo %}
     <a href="/">Voltar</a>
     <h1>Estou na aula de Web:</h1>
     <h2>
@@ -14,5 +8,5 @@
         <p>Curso: {{dados_curso.curso}}</p>
         <p>Ano: {{dados_curso.ano}}</p>
     </h2>
-</body>
-</html>
+    <img src="{{url_for('static', filename='img/garfield.gif')}}" alt="Garfield">
+{% endblock %}
