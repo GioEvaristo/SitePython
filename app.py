@@ -1,8 +1,10 @@
 from flask import Flask, render_template, request, flash, redirect
-app = Flask(__name__)
+
 from database import db
 from flask_migrate import Migrate
 from models import Usuario
+
+app = Flask(__name__)
 app.config['SECRET_KEY'] = '9ebe6f92407c97b3f989420e0e6bebcf9d1976b2e230acf9faf4783f5adffe1b'
 
 # --> drive://usuario:senha@servidor/banco_de_dados
@@ -13,7 +15,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 migrate = Migrate(app, db)
-
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -54,11 +55,47 @@ def usuario_save():
         usuario = Usuario(nome, email, idade)
         db.session.add(usuario)
         db.session.commit()
-        flash('Usuário cadastrado com sucesso!!!')
+        flash('Usuário cadastrado com sucesso!! :D')
         return redirect('/usuario')
     else:
         flash('Preencha todos os campos! >:(')
         return redirect('/usuario/add')
+
+@app.route("/usuario/remove/<int:id>")
+def usuario_remove(id):
+    usuario = Usuario.query.get(id)
+    if usuario:
+        db.session.delete(usuario)
+        db.session.commit()
+        flash('Usuário removido com sucesso!')
+        return redirect("/usuario")
+    else:
+        flash("Caminho incorreto!")
+        return redirect("/usuario")
+
+@app.route("/usuario/edita/<int:id>")
+def usuario_edita(id):
+    usuario = Usuario.query.get(id)
+    return render_template("usuario_edita.html", dados=usuario)
+
+@app.route("/usuario/editasave", methods=['POST'])
+def usuario_editasave():
+    nome = request.form.get('nome')
+    email = request.form.get('email')
+    idade = request.form.get('idade')
+    id = request.form.get('id')
+    if id and nome and email and idade:
+        usuario = Usuario.query.get(id)
+        usuario.nome = nome
+        usuario.email = email
+        usuario.idade = idade
+        db.session.commit()
+        flash('Dados atualizados com sucesso!')
+        return redirect('/usuario')
+    else:
+        flash('Dados incompletos.')
+        return redirect("/usuario")
+
 
 if __name__ == '__main__':
     app.run()

@@ -11,3 +11,9 @@ table, tr, td, th{
     border: 2px solid pink;
     border-collapse: collapse;
 }
+
+div.message{
+    color: tomato;
+    font-size: large;
+    font-weight: bold;
+}
